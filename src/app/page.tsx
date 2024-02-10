@@ -5,7 +5,6 @@ import React, { useEffect, useRef, useState } from "react";
 import styles from "./page.module.scss";
 import { clsx } from "clsx";
 import { z } from "zod";
-import html2canvas from "html2canvas";
 
 const LOCAL_STORAGE_KEY = "MANDATRA";
 const MandatraValueSchema = z.array(z.array(z.string()));
@@ -20,6 +19,8 @@ export default function Mandatra() {
 
   const onImageSaveClick = async () => {
     if (!mainRef.current) return;
+    const html2canvas = await import ('html2canvas').then((mod) => mod.default);
+    /** @todo 이미지 저장 */
     const canvas = await html2canvas(mainRef.current);
   };
 
