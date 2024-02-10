@@ -1,12 +1,17 @@
-.main-container {
-  position: absolute; 
+.container {
+  position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+}
+
+.main-container {
   display: grid;
   grid-template-rows: repeat(3, 1fr);
   grid-template-columns: repeat(3, 1fr);
   border: 1px solid #04022b;
+  margin-bottom: 10px;
+
 }
 
 .cell-container {
@@ -30,4 +35,24 @@
 
 .center {
   border: 1px solid #04022b;
+}
+
+.save-btn {
+  background-color: #11d4b6;
+  border: none;
+  padding: 10px;
+  color: white;
+  border-radius: 10px;
+  width: 140px;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #19b59d;
+  }
+
+  &:active {
+    background-color: #1b9e8a;
+  }
 }
