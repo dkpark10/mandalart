@@ -5,6 +5,8 @@ import React, { useEffect, useRef, useState } from "react";
 import styles from "./page.module.scss";
 import { clsx } from "clsx";
 import { z } from "zod";
+import { WestBottomArrow } from "./components/arrow";
+import { ImArrowDownLeft } from "react-icons/im";
 
 const LOCAL_STORAGE_KEY = "MANDATRA";
 const MandatraValueSchema = z.array(z.array(z.string()));
@@ -19,7 +21,7 @@ export default function Mandatra() {
 
   const onImageSaveClick = async () => {
     if (!mainRef.current) return;
-    const html2canvas = await import ('html2canvas').then((mod) => mod.default);
+    const html2canvas = await import("html2canvas").then((mod) => mod.default);
     /** @todo 이미지 저장 */
     const canvas = await html2canvas(mainRef.current);
   };
@@ -29,6 +31,9 @@ export default function Mandatra() {
     (e: React.ChangeEvent<HTMLTextAreaElement>) => {
       const isCenterArea = row === 4;
       const { value } = e.target;
+      const lineCount = value.split('\n').length;
+
+      if (lineCount >= 4) return;
 
       setValues((prev) => {
         /** @desc 서브 타이틀 입력 칸이라면 */
@@ -57,17 +62,22 @@ export default function Mandatra() {
       <main ref={mainRef} className={styles["main-container"]}>
         {values.map((rowValue, row) => {
           const isCenterArea = row === 4;
-          const centerStyle = isCenterArea && styles["center"];
 
           return (
             <section
               key={row}
-              className={clsx(styles["cell-container"], centerStyle)}
+              className={styles["cell-container"]}
             >
               {rowValue.map((colValue, col) => {
+                const isMainTitleArea = isCenterArea && col === 4;
+
                 return (
                   <div key={`${row}-${col}`} className={styles["cell"]}>
-                    <textarea value={colValue} onChange={onChange(row, col)} />
+                    <textarea
+                      id={isMainTitleArea ? styles["main-title"] : ""}
+                      value={colValue}
+                      onChange={onChange(row, col)}
+                    />
                   </div>
                 );
               })}

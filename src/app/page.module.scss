@@ -1,3 +1,7 @@
+$color-primary1: #11d4b6;
+$color-primary2: #19b59d;;
+$color-primary3: #1b9e8a;
+
 .container {
   position: absolute;
   top: 50%;
@@ -11,7 +15,6 @@
   grid-template-columns: repeat(3, 1fr);
   border: 1px solid #04022b;
   margin-bottom: 10px;
-
 }
 
 .cell-container {
@@ -20,39 +23,59 @@
   grid-template-columns: repeat(3, 1fr);
   width: 300px;
   height: 300px;
+  &:nth-of-type(5) {
+    background-color: $color-primary1;
+    font-weight: 600;
+  }
 }
 
 .cell {
   border: 0.5px solid #04022b;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0px 5px;
+
+  &:nth-of-type(5) {
+    background-color: $color-primary1;;
+    font-weight: 600;
+  }
 
   & textarea {
     width: 100%;
-    height: 100%;
+    max-height: 3rem;
+    background-color: inherit;
     resize: none;
     border: none;
+    text-align: center;
+    overflow-y: hidden;
+
+    &:focus {
+      outline: none;
+    }
   }
 }
 
-.center {
-  border: 1px solid #04022b;
-}
-
 .save-btn {
-  background-color: #11d4b6;
+  background-color: $color-primary1;
   border: none;
   padding: 10px;
   color: white;
   border-radius: 10px;
   width: 140px;
   font-weight: 700;
-  font-size: 1rem;
   cursor: pointer;
 
   &:hover {
-    background-color: #19b59d;
+    background-color: $color-primary2;
   }
 
   &:active {
-    background-color: #1b9e8a;
+    background-color: $color-primary3;
   }
+}
+
+#main-title {
+  color: white;
 }
