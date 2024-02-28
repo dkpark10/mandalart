@@ -34,6 +34,11 @@ export default function Mandatra() {
     const html2canvas = await import("html2canvas").then((mod) => mod.default);
     /** @todo 이미지 저장 */
     const canvas = await html2canvas(mainRef.current);
+
+    const el = document.createElement("a");
+    el.href = canvas.toDataURL("image/png");
+    el.download = '만다라트.png';
+    el.click();
   };
 
   const onDelete = () => {
