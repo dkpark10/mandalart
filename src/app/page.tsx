@@ -36,6 +36,15 @@ export default function Mandatra() {
     const canvas = await html2canvas(mainRef.current);
   };
 
+  const onDelete = () => {
+    localStorage.removeItem(LOCAL_STORAGE_KEY);
+    for (let i = 0; i < 9; i += 1) {
+      for (let j = 0; j < 9; j += 1) {
+        (contentEditableListRef.current[i][j] as HTMLDivElement).innerHTML = '';
+      }
+    }
+  }
+
   const onKeyUp =
     (row: number, col: number) => (e: KeyboardEvent<HTMLDivElement>) => {
       const subTitleTarget = contentEditableListRef.current[col][row];
@@ -43,7 +52,9 @@ export default function Mandatra() {
       if (!subTitleTarget || isCenter) return;
       subTitleTarget.innerHTML = e.currentTarget.innerHTML;
 
-      const stringValues = contentEditableListRef.current.map((row) => row.map((col) => col?.innerHTML ?? ''));
+      const stringValues = contentEditableListRef.current.map((row) =>
+        row.map((col) => col?.innerHTML ?? "")
+      );
       localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(stringValues));
     };
 
@@ -56,48 +67,57 @@ export default function Mandatra() {
 
     for (let i = 0; i < 9; i += 1) {
       for (let j = 0; j < 9; j += 1) {
-        (contentEditableListRef.current[i][j] as HTMLDivElement).innerHTML = result.data[i][j];
+        (contentEditableListRef.current[i][j] as HTMLDivElement).innerHTML =
+          result.data[i][j];
       }
     }
   }, []);
 
   return (
-    <div className={styles["container"]}>
-      <main ref={mainRef} className={styles["main-container"]}>
-        {nineNine.current.map((_, row) => {
-          const isCenterArea = row === 4;
+    <React.Fragment>
+      <header className={styles["header"]}>
+        <h1>만다라트</h1>
+      </header>
+      <div className={styles["container"]}>
+        <main ref={mainRef} className={styles["main-container"]}>
+          {nineNine.current.map((_, row) => {
+            const isCenterArea = row === 4;
 
-          return (
-            <section key={row} className={styles["cell-container"]}>
-              {_.map((_, col) => {
-                const isMainTitleArea = isCenterArea && col === 4;
-                const placeHolder = isMainTitleArea ? '메인 목표' : isCenterArea ? `세부 목표 ${col}` : '';
+            return (
+              <section key={row} className={styles["cell-container"]}>
+                {_.map((_, col) => {
+                  const isMainTitleArea = isCenterArea && col === 4;
 
-                return (
-                  <div
-                    id={clsx(isMainTitleArea && styles["main-title"])}
-                    key={`${row}-${col}`}
-                    className={styles["cell"]}
-                  >
+                  return (
                     <div
-                      data-placeholder={placeHolder}
-                      contentEditable
-                      ref={(el) => {
-                        if (!el) return;
-                        contentEditableListRef.current[row][col] = el;
-                      }}
-                      onKeyUp={onKeyUp(row, col)}
-                    />
-                  </div>
-                );
-              })}
-            </section>
-          );
-        })}
-      </main>
-      <button className={styles["save-btn"]} onClick={onImageSaveClick}>
-        이미지 저장하기
-      </button>
-    </div>
+                      id={clsx(isMainTitleArea && styles["main-title"])}
+                      key={`${row}-${col}`}
+                      className={clsx(styles["cell"], styles["sub-title"])}
+                    >
+                      <div
+                        contentEditable
+                        ref={(el) => {
+                          if (!el) return;
+                          contentEditableListRef.current[row][col] = el;
+                        }}
+                        onKeyUp={onKeyUp(row, col)}
+                      />
+                    </div>
+                  );
+                })}
+              </section>
+            );
+          })}
+        </main>
+        <div className={styles["btn-container"]}>
+          <button className={styles["save-btn"]} onClick={onImageSaveClick}>
+            이미지 저장하기
+          </button>
+          <button className={styles["del-btn"]} onClick={onDelete}>
+            삭제
+          </button>
+        </div>
+      </div>
+    </React.Fragment>
   );
 }

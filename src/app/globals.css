@@ -1,3 +1,7 @@
+:root {
+  background-color: #f8f4f8;
+}
+
 *, *::before, *::after {
   margin: 0;
   padding: 0;

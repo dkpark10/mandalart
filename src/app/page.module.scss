@@ -1,14 +1,18 @@
-$color-primary1: #11d4b6;
-$color-primary2: #19b59d;;
-$color-primary3: #1b9e8a;
+$color-primary1: #ff9100;
+$color-primary2: #9d4edd;
+$color-primary3: #3c096c;
+$font-color: #f8f4f8;
+$deep-color: #24224b;
 
-.textareatemp {
-  resize: none;
-  border: none;
-  text-align: center;
-  overflow-y: hidden;
-  font-size: 3rem;
-  height: 1rem
+.header {
+  padding: 0.5rem 0;
+  color: $deep-color;
+  display: flex;
+  justify-content: center;
+
+  h1 {
+    font-size: 4rem;
+  }
 }
 
 .container {
@@ -31,9 +35,12 @@ $color-primary3: #1b9e8a;
   grid-template-rows: repeat(3, 1fr);
   grid-template-columns: repeat(3, 1fr);
   &:nth-of-type(5) {
-    background-color: $color-primary1;
+    background-color: $color-primary2;
     font-weight: 600;
+    color: $font-color;
   }
+
+  background-color: $font-color;
 }
 
 .cell {
@@ -45,7 +52,7 @@ $color-primary3: #1b9e8a;
   align-items: center;
   padding: 5px;
   font-size: 0.9rem;
-  
+
   div[contenteditable] {
     outline: none;
     text-align: center;
@@ -56,20 +63,26 @@ $color-primary3: #1b9e8a;
 
   div[contenteditable]:empty::before {
     content: attr(data-placeholder);
-    color: rgb
   }
 
   &:nth-of-type(5) {
-    background-color: $color-primary1;;
+    background-color: $color-primary1;
+    color: $font-color;
     font-weight: 600;
   }  
+}
+
+.btn-container {
+  padding: 4px 0;
+  display: flex;
+  justify-content: space-between;
 }
 
 .save-btn {
   background-color: $color-primary1;
   border: none;
   padding: 10px;
-  color: white;
+  color: $font-color;
   border-radius: 10px;
   width: 140px;
   font-weight: 700;
@@ -84,7 +97,23 @@ $color-primary3: #1b9e8a;
   }
 }
 
+.del-btn {
+  border: none;
+  padding: 10px;
+  color: $color-primary3;
+  border-radius: 10px;
+  width: 140px;
+  font-weight: 700;
+  cursor: pointer;
+  border: 1px solid $color-primary3;
+
+  &:hover {
+    background-color: #e4e9ef
+  }
+}
+
 #main-title {
   background-color: $color-primary3;
   font-size: 1.1rem;
+  color: $font-color;
 }
