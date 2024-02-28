@@ -1,32 +1,30 @@
 "use client";
 
 // import Cell from "./components/cell";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, type  KeyboardEvent } from "react";
 import styles from "./page.module.scss";
 import { clsx } from "clsx";
 import { z } from "zod";
-import { WestBottomArrow } from "./components/arrow";
-import { ImArrowDownLeft } from "react-icons/im";
 
 const LOCAL_STORAGE_KEY = "MANDATRA";
 const MandatraValueSchema = z.array(z.array(z.string()));
 
 interface MandatraItem {
-  value: string;
-  lineCount: number;
+  row: number;
+  col: number;
 }
 
 export default function Mandatra() {
   const mainRef = useRef<HTMLDivElement>(null);
-  const textAreaListRef = useRef<Array<Array<HTMLTextAreaElement | null>>>(
+  const contentEditableListRef = useRef<Array<Array<HTMLDivElement | null>>>(
     Array.from({ length: 9 }, () => Array.from({ length: 9 }, () => null))
   );
 
-  const [values, setValues] = useState<Array<Array<MandatraItem>>>(
-    Array.from({ length: 9 }, () =>
-      Array.from({ length: 9 }, () => ({
-        value: "",
-        lineCount: 0,
+  const nineNine = useRef<Array<Array<MandatraItem>>>(
+    Array.from({ length: 9 }, (_, row) =>
+      Array.from({ length: 9 }, (_, col) => ({
+        row,
+        col,
       }))
     )
   );
@@ -38,34 +36,14 @@ export default function Mandatra() {
     const canvas = await html2canvas(mainRef.current);
   };
 
-  const onChange =
-    (row: number, col: number) =>
-    (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-      const engRegex = /^[a-z|A-Z]+$/;
+  const onKeyUp =
+    (row: number, col: number) => (e: KeyboardEvent<HTMLDivElement>) => {
+      const subTitleTarget = contentEditableListRef.current[col][row];
+      const isCenter = row === 4 && col === 4;
+      if (!subTitleTarget || isCenter) return;
+      subTitleTarget.innerHTML = e.currentTarget.innerHTML;
 
-      const isCenterArea = row === 4;
-      const { value } = e.target;
-      const lineCount = value.split("\n").length;
-
-      if (lineCount >= 4 || engRegex.exec(value)) return;
-
-      setValues((prev) => {
-        /** @desc 서브 타이틀 입력 칸이라면 */
-        if ((isCenterArea && col !== 4) || col === 4) {
-          prev[col][row] = {
-            value,
-            lineCount,
-          };
-        }
-
-        prev[row][col] = {
-          value,
-          lineCount,
-        };
-        return [...prev];
-      });
-
-      const stringValues = values.map((row) => row.map((col) => col.value));
+      const stringValues = contentEditableListRef.current.map((row) => row.map((col) => col?.innerHTML ?? ''));
       localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(stringValues));
     };
 
@@ -76,48 +54,39 @@ export default function Mandatra() {
     const result = MandatraValueSchema.safeParse(JSON.parse(val));
     if (!result.success) return;
 
-    const data = result.data.map((row) =>
-      row.map(
-        (col): MandatraItem => ({
-          value: col,
-          lineCount: col.split("\n").length,
-        })
-      )
-    );
-
-    setValues(data);
+    for (let i = 0; i < 9; i += 1) {
+      for (let j = 0; j < 9; j += 1) {
+        (contentEditableListRef.current[i][j] as HTMLDivElement).innerHTML = result.data[i][j];
+      }
+    }
   }, []);
 
   return (
     <div className={styles["container"]}>
-      {/* <textarea className={styles["textareatemp"]} />
-      <textarea className={styles["textareatemp"]} /> */}
       <main ref={mainRef} className={styles["main-container"]}>
-        {values.map((rowValue, row) => {
+        {nineNine.current.map((_, row) => {
           const isCenterArea = row === 4;
 
           return (
             <section key={row} className={styles["cell-container"]}>
-              {rowValue.map(({ value, lineCount }, col) => {
+              {_.map((_, col) => {
                 const isMainTitleArea = isCenterArea && col === 4;
+                const placeHolder = isMainTitleArea ? '메인 목표' : isCenterArea ? `세부 목표 ${col}` : '';
 
                 return (
                   <div
-                    id={isMainTitleArea ? styles["main-title"] : ""}
+                    id={clsx(isMainTitleArea && styles["main-title"])}
                     key={`${row}-${col}`}
                     className={styles["cell"]}
                   >
-                    <textarea
+                    <div
+                      data-placeholder={placeHolder}
+                      contentEditable
                       ref={(el) => {
                         if (!el) return;
-                        textAreaListRef.current[row][col] = el;
+                        contentEditableListRef.current[row][col] = el;
                       }}
-                      className={clsx(
-                        styles["first-line"],
-                        styles[`line-${lineCount}`]
-                      )}
-                      value={value}
-                      onChange={onChange(row, col)}
+                      onKeyUp={onKeyUp(row, col)}
                     />
                   </div>
                 );
