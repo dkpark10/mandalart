@@ -4,26 +4,12 @@
   </header>
   <div class="container">
     <main ref="mainRef" class="main-container">
-      <section
-        v-for="(rows, row) in nineNine"
-        :key="row"
-        class="cell-container"
-      >
-        <div
-          :id="isCenter(row, col) ? 'main-title' : ''"
-          class="cell sub-title"
-          v-for="(_, col) in rows"
-          :key="`${row}-${col}`"
-        >
-          <div
-            @keyup="onKeyUp(row, col, $event)"
-            contenteditable
-            :ref="
-              (el) => {
-                contentEditableRefs[row][col] = el as HTMLDivElement;
-              }
-            "
-          />
+      <section v-for="(rows, row) in nineNine" :key="row" class="cell-container">
+        <div :id="isCenter(row, col) ? 'main-goal' : ''" class="cell" v-for="(_, col) in rows" :key="`${row}-${col}`">
+          <div @keyup="onKeyUp(row, col, $event)" contenteditable :ref="(el) => {
+              contentEditableRefs[row][col] = el as HTMLDivElement;
+            }
+            " />
         </div>
       </section>
     </main>
@@ -37,9 +23,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
+import { z } from "zod";
 
 const LOCAL_STORAGE_KEY = "MANDATRA";
+const MandatraValueSchema = z.array(z.array(z.string()));
 
 const mainRef = ref<HTMLDivElement>();
 
@@ -96,14 +84,31 @@ const onKeyUp = (
   );
   localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(stringValues));
 };
+
+onMounted(() => {
+
+  const val = localStorage.getItem(LOCAL_STORAGE_KEY);
+  if (!val) return;
+
+  const result = MandatraValueSchema.safeParse(JSON.parse(val));
+  if (!result.success) return;
+
+  for (let i = 0; i < 9; i += 1) {
+    for (let j = 0; j < 9; j += 1) {
+      contentEditableRefs.value[i][j]!.innerHTML = result.data[i][j];
+    }
+  }
+
+});
 </script>
 
 <style lang="scss" scoped>
-$color-primary1: #ffc880;
+$color-primary1: #ff9100;
 $color-primary2: #9d4edd;
 $color-primary3: #5a189a;
 $font-color: #f8f4f8;
 $deep-color: #24224b;
+$border-color: #868594;
 
 header {
   padding: 0.5rem 0;
@@ -127,7 +132,7 @@ header {
   display: grid;
   grid-template-rows: repeat(3, 1fr);
   grid-template-columns: repeat(3, 1fr);
-  border: 1px solid #04022b;
+  border: 1px solid $border-color;
   margin-bottom: 10px;
 }
 
@@ -148,7 +153,7 @@ header {
 .cell {
   width: 90px;
   height: 90px;
-  border: 0.5px solid #04022b;
+  border: 0.5px solid $border-color;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -214,7 +219,7 @@ header {
   }
 }
 
-#main-title {
+#main-goal {
   background-color: $color-primary3;
   font-size: 1.1rem;
   color: $font-color;
