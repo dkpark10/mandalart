@@ -7,8 +7,8 @@
       <section v-for="(rows, row) in nineNine" :key="row" class="cell-container">
         <div :id="isCenter(row, col) ? 'main-goal' : ''" class="cell" v-for="(_, col) in rows" :key="`${row}-${col}`">
           <div @keyup="onKeyUp(row, col, $event)" contenteditable :ref="(el) => {
-              contentEditableRefs[row][col] = el as HTMLDivElement;
-            }
+            contentEditableRefs[row][col] = el as HTMLDivElement;
+          }
             " />
         </div>
       </section>
@@ -103,9 +103,9 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
-$color-primary1: #ff9100;
-$color-primary2: #9d4edd;
-$color-primary3: #5a189a;
+$color-primary1: #83828b;
+$color-primary2: #282d40;
+$color-primary3: #0a162c;
 $font-color: #f8f4f8;
 $deep-color: #24224b;
 $border-color: #868594;
