@@ -32,7 +32,6 @@ export default function Mandatra() {
   const onImageSaveClick = async () => {
     if (!mainRef.current) return;
     const html2canvas = await import("html2canvas").then((mod) => mod.default);
-    /** @todo 이미지 저장 */
     const canvas = await html2canvas(mainRef.current);
 
     const el = document.createElement("a");
