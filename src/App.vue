@@ -8,8 +8,9 @@
         <div :id="isCenter(row, col) ? 'main-goal' : ''" class="cell" v-for="(_, col) in rows" :key="`${row}-${col}`">
           <div @keyup="onKeyUp(row, col, $event)" contenteditable :ref="(el) => {
             contentEditableRefs[row][col] = el as HTMLDivElement;
-          }
-            " />
+          }"
+            :data-testid="`edit-${row}-${col}`" 
+            />
         </div>
       </section>
     </main>
@@ -75,9 +76,9 @@ const onKeyUp = (
   const subTitleTarget = contentEditableRefs.value[col][row];
   const center = isCenter(row, col);
 
-  if (!subTitleTarget || center) return;
-
-  subTitleTarget.innerHTML = e.currentTarget.innerHTML;
+  if (subTitleTarget && (row === 4 || col === 4) && !center) {
+    subTitleTarget.innerHTML = e.currentTarget.innerHTML;
+  }
 
   const stringValues = contentEditableRefs.value.map((row) =>
     row.map((col) => col?.innerHTML ?? ""),
@@ -106,6 +107,7 @@ onMounted(() => {
 $color-primary1: #83828b;
 $color-primary2: #282d40;
 $color-primary3: #0a162c;
+$main-goal-color: #f96868;
 $font-color: #f8f4f8;
 $deep-color: #24224b;
 $border-color: #868594;
@@ -222,6 +224,6 @@ header {
 #main-goal {
   background-color: $color-primary3;
   font-size: 1.1rem;
-  color: $font-color;
+  color: $main-goal-color;
 }
 </style>
