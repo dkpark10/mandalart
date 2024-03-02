@@ -55,6 +55,9 @@ devDependencies:
   prettier:
     specifier: ^3.0.3
     version: 3.2.5
+  remove-attr:
+    specifier: ^0.0.13
+    version: 0.0.13
   sass:
     specifier: ^1.71.1
     version: 1.71.1
@@ -1896,6 +1899,10 @@ packages:
     engines: {node: '>=8.10.0'}
     dependencies:
       picomatch: 2.3.1
+    dev: true
+
+  /remove-attr@0.0.13:
+    resolution: {integrity: sha512-NgcTnY2rtHDU4y5Cq65nI4AQTF/9sBEhMowrHZ1CmxuHwYpaDgN1NQqoVyRqY49X0s8C8N6ub0CML4UWAa4NLQ==}
     dev: true
 
   /resolve-from@4.0.0:
